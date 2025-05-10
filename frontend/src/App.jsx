@@ -15,8 +15,6 @@ function App() {
       password,
     };
 
-    console.log("chamei");
-
     const response = await fetch("http://localhost:3000/signup", {
       method: "post",
       headers: {
