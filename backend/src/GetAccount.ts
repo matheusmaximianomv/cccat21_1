@@ -7,9 +7,6 @@ export default class Signup {
     const accountData = await this.accountDAO.getAccountById(accountId);
     const accountAssetsData = await this.accountDAO.getAccountAssets(accountId);
 
-    console.log('accountData ->', accountData);
-    console.log('accountAssetsData ->', accountAssetsData);
-
     accountData.assets = [];
     for (const accountAssetData of accountAssetsData) {
       accountData.assets.push({
