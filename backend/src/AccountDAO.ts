@@ -26,7 +26,7 @@ export class AccountDAODatabase implements AccountDAO {
     connection.$pool.end();
   }
 
-  public async getAccountById(accountId: any): Promise<void> {
+  public async getAccountById(accountId: any): Promise<any> {
     const connection = pgp()(
       process.env.BRANAS_DB_CONNECTION ||
         "postgres://postgres:123456@localhost:5432/app"
@@ -42,7 +42,7 @@ export class AccountDAODatabase implements AccountDAO {
     return accountData;
   }
 
-  public async getAccountAssets(accountId: any): Promise<void> {
+  public async getAccountAssets(accountId: any): Promise<any> {
     const connection = pgp()(
       process.env.BRANAS_DB_CONNECTION ||
         "postgres://postgres:123456@localhost:5432/app"
