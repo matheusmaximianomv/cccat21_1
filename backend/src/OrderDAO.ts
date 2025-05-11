@@ -26,7 +26,7 @@ export class OrderDAODatabase implements OrderDAO {
       ]
     );
 
-    connection.$pool.end();
+    await connection.$pool.end();
   }
 
   public async getOrderById(orderId: any) {
@@ -40,7 +40,7 @@ export class OrderDAODatabase implements OrderDAO {
       [orderId]
     );
 
-    connection.$pool.end();
+    await connection.$pool.end();
 
     return orderData;
   }

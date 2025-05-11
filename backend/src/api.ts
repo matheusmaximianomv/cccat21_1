@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
-import { AccountDAODatabase } from "./AccountDAO";
+import { AccountRepositoryDatabase } from "./AccountRepository";
 import { OrderDAODatabase } from "./OrderDAO";
 import Signup from "./Signup";
 import GetAccount from "./GetAccount";
@@ -13,11 +13,11 @@ const app = express();
 app.use(express.json());
 app.use(cors({}));
 
-const accountDAODatabase = new AccountDAODatabase();
-const signup = new Signup(accountDAODatabase);
-const deposit = new Deposit(accountDAODatabase);
-const withdraw = new Withdraw(accountDAODatabase);
-const getAccount = new GetAccount(accountDAODatabase);
+const accountRepositoryDatabase = new AccountRepositoryDatabase();
+const signup = new Signup(accountRepositoryDatabase);
+const deposit = new Deposit(accountRepositoryDatabase);
+const withdraw = new Withdraw(accountRepositoryDatabase);
+const getAccount = new GetAccount(accountRepositoryDatabase);
 
 const orderDAODatabase = new OrderDAODatabase();
 const placeOrder = new PlaceOrder(orderDAODatabase);

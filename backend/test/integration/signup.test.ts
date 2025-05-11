@@ -1,16 +1,17 @@
-import { AccountDAODatabase, AccountDAOMemory } from "../../src/AccountDAO";
+import { AccountRepositoryDatabase, AccountRepositoryMemory } from "../../src/AccountRepository";
 import Signup from "../../src/Signup";
 import GetAccount from "../../src/GetAccount";
 import sinon from "sinon";
+import Account from "../../src/Account";
 
 let signup: Signup;
 let getAccount: GetAccount;
 
 beforeEach(() => {
-  // const accountDAO = new AccountDAOMemory();
-  const accountDAO = new AccountDAODatabase();
-  signup = new Signup(accountDAO);
-  getAccount = new GetAccount(accountDAO);
+  // const AccountRepository = new AccountRepositoryMemory();
+  const AccountRepository = new AccountRepositoryDatabase();
+  signup = new Signup(AccountRepository);
+  getAccount = new GetAccount(AccountRepository);
 });
 
 test("Deve criar uma conta válida", async () => {
@@ -94,17 +95,24 @@ test("Deve criar uma conta válida com stub", async () => {
   };
 
   const saveAccountStub = sinon
-    .stub(AccountDAODatabase.prototype, "saveAccount")
+    .stub(AccountRepositoryDatabase.prototype, "saveAccount")
     .resolves();
   const { accountId } = await signup.execute(inputSignup);
 
   expect(accountId).toBeDefined();
 
   const getAccountByIdStub = sinon
-    .stub(AccountDAODatabase.prototype, "getAccountById")
-    .resolves(inputSignup);
+    .stub(AccountRepositoryDatabase.prototype, "getAccountById")
+    .resolves(
+      Account.create(
+        inputSignup.name,
+        inputSignup.email,
+        inputSignup.document,
+        inputSignup.password
+      )
+    );
   const getAccountAssetsStub = sinon
-    .stub(AccountDAODatabase.prototype, "getAccountAssets")
+    .stub(AccountRepositoryDatabase.prototype, "getAccountAssets")
     .resolves([]);
   const outputGetAccount = await getAccount.execute(accountId);
 
@@ -125,21 +133,27 @@ test("Deve criar uma conta válida com spy", async () => {
     password: "asdQWE123",
   };
 
-  const saveAccountSpy = sinon.spy(AccountDAODatabase.prototype, "saveAccount");
-  const { accountId } = await signup.execute(inputSignup);
+  const saveAccountSpy = sinon.spy(AccountRepositoryDatabase.prototype, "saveAccount");
+  const outputSignup = await signup.execute(inputSignup);
 
-  expect(accountId).toBeDefined();
+  expect(outputSignup.accountId).toBeDefined();
 
-  const outputGetAccount = await getAccount.execute(accountId);
+  const outputGetAccount = await getAccount.execute(outputSignup.accountId);
 
   expect(outputGetAccount.name).toBe(inputSignup.name);
   expect(outputGetAccount.email).toBe(inputSignup.email);
   expect(outputGetAccount.document).toBe(inputSignup.document);
 
   expect(saveAccountSpy.calledOnce).toBe(true);
-  expect(
-    saveAccountSpy.calledWith(Object.assign(inputSignup, { accountId }))
-  ).toBe(true);
+
+  const account = new Account(
+    outputSignup.accountId,
+    inputSignup.name,
+    inputSignup.email,
+    inputSignup.document,
+    inputSignup.password
+  );
+  expect(saveAccountSpy.calledWith(account)).toBe(true);
 
   saveAccountSpy.restore();
 });
@@ -152,29 +166,29 @@ test("Deve criar uma conta válida com mock", async () => {
     password: "asdQWE123",
   };
 
-  const accountDAOMock = sinon.mock(AccountDAODatabase.prototype);
-  accountDAOMock.expects("saveAccount").once().resolves();
+  const AccountRepositoryMock = sinon.mock(AccountRepositoryDatabase.prototype);
+  AccountRepositoryMock.expects("saveAccount").once().resolves();
 
   const { accountId } = await signup.execute(inputSignup);
 
   expect(accountId).toBeDefined();
 
-  accountDAOMock.expects("getAccountById").once().resolves(inputSignup);
-  accountDAOMock.expects("getAccountAssets").once().resolves([]);
+  AccountRepositoryMock.expects("getAccountById").once().resolves(inputSignup);
+  AccountRepositoryMock.expects("getAccountAssets").once().resolves([]);
   const outputGetAccount = await getAccount.execute(accountId);
 
   expect(outputGetAccount.name).toBe(inputSignup.name);
   expect(outputGetAccount.email).toBe(inputSignup.email);
   expect(outputGetAccount.document).toBe(inputSignup.document);
 
-  accountDAOMock.verify();
-  accountDAOMock.restore();
+  AccountRepositoryMock.verify();
+  AccountRepositoryMock.restore();
 });
 
 test("Deve criar uma conta válida com fake", async () => {
-  const accountDAO = new AccountDAOMemory();
-  signup = new Signup(accountDAO);
-  getAccount = new GetAccount(accountDAO);
+  const AccountRepository = new AccountRepositoryMemory();
+  signup = new Signup(AccountRepository);
+  getAccount = new GetAccount(AccountRepository);
 
   const inputSignup = {
     name: "John Doe",

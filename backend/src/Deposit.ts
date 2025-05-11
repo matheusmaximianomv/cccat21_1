@@ -1,9 +1,18 @@
-import AccountDAO from "./AccountDAO";
+import AccountAsset from "./AccountAsset";
+import AccountRepository from "./AccountRepository";
+
+interface Input {
+  accountId: string;
+  assetId: string;
+  quantity: number;
+}
 
 export default class Deposit {
-  constructor(private readonly accountDAO: AccountDAO) {}
+  constructor(private readonly AccountRepository: AccountRepository) {}
 
-  public async execute(input: any): Promise<void> {
-    await this.accountDAO.saveAccountAsset(input.accountId, input.assetId, input.quantity)
+  public async execute(input: Input): Promise<void> {
+    await this.AccountRepository.saveAccountAsset(
+      new AccountAsset(input.accountId, input.assetId, input.quantity)
+    );
   }
 }
