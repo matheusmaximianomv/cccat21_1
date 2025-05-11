@@ -1,9 +1,13 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
-import { deposit, getOrder, placeOrder, withdraw } from "./application";
 import { AccountDAODatabase } from "./AccountDAO";
+import { OrderDAODatabase } from "./OrderDAO";
 import Signup from "./Signup";
 import GetAccount from "./GetAccount";
+import Deposit from "./Deposit";
+import Withdraw from "./Withdraw";
+import PlaceOrder from "./PlaceOrder";
+import GetOrder from "./getOrder";
 
 const app = express();
 app.use(express.json());
@@ -11,7 +15,13 @@ app.use(cors({}));
 
 const accountDAODatabase = new AccountDAODatabase();
 const signup = new Signup(accountDAODatabase);
+const deposit = new Deposit(accountDAODatabase);
+const withdraw = new Withdraw(accountDAODatabase);
 const getAccount = new GetAccount(accountDAODatabase);
+
+const orderDAODatabase = new OrderDAODatabase();
+const placeOrder = new PlaceOrder(orderDAODatabase);
+const getOrder = new GetOrder(orderDAODatabase);
 
 app.post("/signup", async (req: Request, res: Response) => {
   try {
@@ -26,7 +36,7 @@ app.post("/signup", async (req: Request, res: Response) => {
 app.post("/deposit", async (req: Request, res: Response) => {
   try {
     const input = req.body;
-    await deposit(input);
+    await deposit.execute(input);
     res.end();
   } catch (e: any) {
     res.status(500).json({ error: e.message });
@@ -36,7 +46,7 @@ app.post("/deposit", async (req: Request, res: Response) => {
 app.post("/withdraw", async (req: Request, res: Response) => {
   try {
     const input = req.body;
-    await withdraw(input);
+    await withdraw.execute(input);
     res.end();
   } catch (e: any) {
     res.status(500).json({ error: e.message });
@@ -46,7 +56,7 @@ app.post("/withdraw", async (req: Request, res: Response) => {
 app.post("/place_order", async (req: Request, res: Response) => {
   try {
     const input = req.body;
-    const output = await placeOrder(input);
+    const output = await placeOrder.execute(input);
     res.json(output);
   } catch (e: any) {
     res.status(500).json({ error: e.message });
@@ -56,7 +66,7 @@ app.post("/place_order", async (req: Request, res: Response) => {
 app.get("/orders/:orderId", async (req: Request, res: Response) => {
   try {
     const orderId = req.params.orderId;
-    const output = await getOrder(orderId);
+    const output = await getOrder.execute(orderId);
     res.json(output);
   } catch (e: any) {
     res.status(500).json({ error: e.message });

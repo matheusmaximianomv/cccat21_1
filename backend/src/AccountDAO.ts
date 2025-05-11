@@ -4,6 +4,17 @@ export default interface AccountDAO {
   saveAccount: (account: any) => Promise<void>;
   getAccountById: (accountId: any) => Promise<any>;
   getAccountAssets: (accountId: any) => Promise<any>;
+  saveAccountAsset: (
+    accountId: any,
+    assetId: any,
+    quantity: any
+  ) => Promise<void>;
+  getAccountAsset: (accountId: any, assetId: any) => Promise<any>;
+  updateAccountAsset: (
+    quantity: any,
+    accountId: any,
+    assetId: any
+  ) => Promise<any>;
 }
 
 export class AccountDAODatabase implements AccountDAO {
@@ -57,6 +68,58 @@ export class AccountDAODatabase implements AccountDAO {
 
     return data;
   }
+
+  public async saveAccountAsset(
+    accountId: any,
+    assetId: any,
+    quantity: any
+  ): Promise<void> {
+    const connection = pgp()(
+      process.env.BRANAS_DB_CONNECTION ||
+        "postgres://postgres:123456@localhost:5432/app"
+    );
+
+    await connection.query(
+      "insert into ccca.account_asset (account_id, asset_id, quantity) values ($1, $2, $3)",
+      [accountId, assetId, quantity]
+    );
+
+    connection.$pool.end();
+  }
+
+  public async getAccountAsset(accountId: any, assetId: any): Promise<any> {
+    const connection = pgp()(
+      process.env.BRANAS_DB_CONNECTION ||
+        "postgres://postgres:123456@localhost:5432/app"
+    );
+
+    const data = await connection.query(
+      "select * from ccca.account_asset where account_id = $1 and asset_id = $2",
+      [accountId, assetId]
+    );
+
+    connection.$pool.end();
+
+    return data;
+  }
+
+  public async updateAccountAsset(
+    quantity: any,
+    accountId: any,
+    assetId: any
+  ): Promise<void> {
+    const connection = pgp()(
+      process.env.BRANAS_DB_CONNECTION ||
+        "postgres://postgres:123456@localhost:5432/app"
+    );
+
+    await connection.query(
+      "update ccca.account_asset set quantity = $1 where account_id = $2 and asset_id = $3",
+      [quantity, accountId, assetId]
+    );
+
+    connection.$pool.end();
+  }
 }
 
 export class AccountDAOMemory implements AccountDAO {
@@ -72,7 +135,23 @@ export class AccountDAOMemory implements AccountDAO {
     );
   }
 
-  public async getAccountAssets(accountId: any): Promise<any> {
+  public async getAccountAssets(_accountId: any): Promise<any> {
     return [];
   }
+
+  public async saveAccountAsset(
+    _accountId: any,
+    _assetId: any,
+    _quantity: any
+  ): Promise<void> {}
+
+  public async getAccountAsset(accountId: any, assetId: any): Promise<any> {
+    return [];
+  }
+
+  public async updateAccountAsset(
+    _quantity: any,
+    _accountId: any,
+    _assetId: any
+  ): Promise<void> {}
 }
