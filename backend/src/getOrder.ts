@@ -1,17 +1,17 @@
-import OrderDAO from "./OrderDAO";
+import OrderRepository from "./OrderRepository";
 
 export default class GetOrder {
-  constructor(private readonly orderDAO: OrderDAO) {}
+  constructor(private readonly orderRepository: OrderRepository) {}
 
   public async execute(orderId: any): Promise<any> {
-    const orderData = await this.orderDAO.getOrderById(orderId);
+    const orderData = await this.orderRepository.getOrderById(orderId);
     const order = {
-      orderId: orderData.order_id,
-      marketId: orderData.market_id,
-      accountId: orderData.account_id,
+      orderId: orderData.orderId,
+      marketId: orderData.marketId,
+      accountId: orderData.accountId,
       side: orderData.side,
-      quantity: parseFloat(orderData.quantity),
-      price: parseFloat(orderData.price),
+      quantity: orderData.quantity,
+      price: orderData.price,
       status: orderData.status,
       timestamp: orderData.timestamp,
     };

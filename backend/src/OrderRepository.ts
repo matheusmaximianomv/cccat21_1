@@ -1,12 +1,13 @@
 import pgp from "pg-promise";
+import Order from "./Order";
 
-export default interface OrderDAO {
-  saverOrder: (order: any) => Promise<void>;
-  getOrderById: (orderId: any) => Promise<any>;
+export default interface OrderRepository {
+  saverOrder: (order: Order) => Promise<void>;
+  getOrderById: (orderId: string) => Promise<Order>;
 }
 
-export class OrderDAODatabase implements OrderDAO {
-  public async saverOrder(order: any) {
+export class OrderRepositoryDatabase implements OrderRepository {
+  public async saverOrder(order: Order) {
     const connection = pgp()(
       process.env.BRANAS_DB_CONNECTION ||
         "postgres://postgres:123456@localhost:5432/app"
@@ -29,7 +30,7 @@ export class OrderDAODatabase implements OrderDAO {
     await connection.$pool.end();
   }
 
-  public async getOrderById(orderId: any) {
+  public async getOrderById(orderId: string): Promise<Order> {
     const connection = pgp()(
       process.env.BRANAS_DB_CONNECTION ||
         "postgres://postgres:123456@localhost:5432/app"
@@ -42,6 +43,15 @@ export class OrderDAODatabase implements OrderDAO {
 
     await connection.$pool.end();
 
-    return orderData;
+    return new Order(
+      orderData.order_id,
+      orderData.market_id,
+      orderData.account_id,
+      orderData.side,
+      parseFloat(orderData.quantity),
+      parseFloat(orderData.price),
+      orderData.status,
+      orderData.timestamp
+    );
   }
 }

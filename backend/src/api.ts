@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import { AccountRepositoryDatabase } from "./AccountRepository";
-import { OrderDAODatabase } from "./OrderDAO";
+import { OrderRepositoryDatabase } from "./OrderRepository";
 import Signup from "./Signup";
 import GetAccount from "./GetAccount";
 import Deposit from "./Deposit";
@@ -19,9 +19,9 @@ const deposit = new Deposit(accountRepositoryDatabase);
 const withdraw = new Withdraw(accountRepositoryDatabase);
 const getAccount = new GetAccount(accountRepositoryDatabase);
 
-const orderDAODatabase = new OrderDAODatabase();
-const placeOrder = new PlaceOrder(orderDAODatabase);
-const getOrder = new GetOrder(orderDAODatabase);
+const orderRepositoryDatabase = new OrderRepositoryDatabase();
+const placeOrder = new PlaceOrder(orderRepositoryDatabase);
+const getOrder = new GetOrder(orderRepositoryDatabase);
 
 app.post("/signup", async (req: Request, res: Response) => {
   try {

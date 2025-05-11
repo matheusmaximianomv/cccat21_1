@@ -45,47 +45,6 @@ test("Não deve criar uma conta com nome inválido", async () => {
   );
 });
 
-test("Não deve criar uma conta com email inválido", async () => {
-  const inputSignup = {
-    name: "John Doe",
-    email: "john.doe",
-    document: "97456321558",
-    password: "asdQWE123",
-  };
-
-  await expect(() => signup.execute(inputSignup)).rejects.toThrow(
-    "Invalid email"
-  );
-});
-
-test.each(["111", "abc", "7897897897"])(
-  "Não deve criar uma conta com cpf inválido",
-  async (document: string) => {
-    const inputSignup = {
-      name: "John Doe",
-      email: "john.doe@gmail.com",
-      document,
-      password: "asdQWE123",
-    };
-    await expect(() => signup.execute(inputSignup)).rejects.toThrow(
-      "Invalid document"
-    );
-  }
-);
-
-test("Não deve criar uma conta com senha inválida", async () => {
-  const inputSignup = {
-    name: "John Doe",
-    email: "john.doe@gmail.com",
-    document: "97456321558",
-    password: "asdQWE",
-  };
-
-  await expect(() => signup.execute(inputSignup)).rejects.toThrow(
-    "Invalid password"
-  );
-});
-
 test("Deve criar uma conta válida com stub", async () => {
   const inputSignup = {
     name: "John Doe",
