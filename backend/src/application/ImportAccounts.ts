@@ -1,5 +1,5 @@
-import AccountRepository from "./AccountRepository";
-import Account from "./Account";
+import AccountRepository from "../infrastructure/repository/AccountRepository";
+import Account from "../domain/Account";
 
 export default class Signup {
   constructor(private readonly AccountRepository: AccountRepository) {}

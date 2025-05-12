@@ -1,5 +1,5 @@
-import Order from "./Order";
-import OrderRepository from "./OrderRepository";
+import Order from "../domain/Order";
+import OrderRepository from "../infrastructure/repository/OrderRepository";
 
 interface Input {
   marketId: string;

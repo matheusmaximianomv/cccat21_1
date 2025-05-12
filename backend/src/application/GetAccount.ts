@@ -1,4 +1,4 @@
-import AccountRepository from "./AccountRepository";
+import AccountRepository from "../infrastructure/repository/AccountRepository";
 
 interface Output {
   accountId: string;

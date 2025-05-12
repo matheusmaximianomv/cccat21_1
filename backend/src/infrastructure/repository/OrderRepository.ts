@@ -1,6 +1,5 @@
-import pgp from "pg-promise";
-import Order from "./Order";
-import DatabaseConnection from "./DatabaseConnection";
+import Order from "../../domain/Order";
+import DatabaseConnection from "../database/DatabaseConnection";
 
 export default interface OrderRepository {
   saverOrder: (order: Order) => Promise<void>;

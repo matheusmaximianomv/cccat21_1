@@ -1,9 +1,9 @@
-import { AccountRepositoryDatabase, AccountRepositoryMemory } from "../../src/AccountRepository";
-import Signup from "../../src/Signup";
-import GetAccount from "../../src/GetAccount";
+import { AccountRepositoryDatabase, AccountRepositoryMemory } from "../../src/infrastructure/repository/AccountRepository";
+import Signup from "../../src/application/Signup";
+import GetAccount from "../../src/application/GetAccount";
 import sinon from "sinon";
-import Account from "../../src/Account";
-import DatabaseConnection, { PgPromiseAdapter } from "../../src/DatabaseConnection";
+import Account from "../../src/domain/Account";
+import DatabaseConnection, { PgPromiseAdapter } from "../../src/infrastructure/database/DatabaseConnection";
 
 let connection: DatabaseConnection;
 

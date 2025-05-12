@@ -1,17 +1,17 @@
-import { ExpressAdapter } from "./HttpServer";
+import { ExpressAdapter } from "./infrastructure/http/HttpServer";
 
-import { AccountRepositoryDatabase } from "./AccountRepository";
-import { OrderRepositoryDatabase } from "./OrderRepository";
+import { AccountRepositoryDatabase } from "./infrastructure/repository/AccountRepository";
+import { OrderRepositoryDatabase } from "./infrastructure/repository/OrderRepository";
 
-import Signup from "./Signup";
-import GetAccount from "./GetAccount";
-import Deposit from "./Deposit";
-import Withdraw from "./Withdraw";
-import PlaceOrder from "./PlaceOrder";
-import GetOrder from "./getOrder";
-import AccountController from "./AccountController";
-import OrderController from "./OrderController";
-import { PgPromiseAdapter } from "./DatabaseConnection";
+import Signup from "./application/Signup";
+import GetAccount from "./application/GetAccount";
+import Deposit from "./application/Deposit";
+import Withdraw from "./application/Withdraw";
+import PlaceOrder from "./application/PlaceOrder";
+import GetOrder from "./application/GetOrder";
+import AccountController from "./infrastructure/controllers/AccountController";
+import OrderController from "./infrastructure/controllers/OrderController";
+import { PgPromiseAdapter } from "./infrastructure/database/DatabaseConnection";
 
 const httpServer = new ExpressAdapter();
 

@@ -1,4 +1,4 @@
-import { isValidPassword } from '../../src/validatePassword'
+import { isValidPassword } from '../../src/domain/validatePassword'
 
 test("Deve validar a senha", () => {
   const password = "asdQWE123";
