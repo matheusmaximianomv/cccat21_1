@@ -3,15 +3,24 @@ import Signup from "../../src/Signup";
 import GetAccount from "../../src/GetAccount";
 import sinon from "sinon";
 import Account from "../../src/Account";
+import DatabaseConnection, { PgPromiseAdapter } from "../../src/DatabaseConnection";
+
+let connection: DatabaseConnection;
 
 let signup: Signup;
 let getAccount: GetAccount;
 
 beforeEach(() => {
   // const AccountRepository = new AccountRepositoryMemory();
-  const AccountRepository = new AccountRepositoryDatabase();
+  connection = new PgPromiseAdapter();
+  const AccountRepository = new AccountRepositoryDatabase(connection);
+  
   signup = new Signup(AccountRepository);
   getAccount = new GetAccount(AccountRepository);
+});
+
+afterEach(async () => {
+  await connection.close();
 });
 
 test("Deve criar uma conta válida", async () => {

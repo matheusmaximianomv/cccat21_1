@@ -9,7 +9,7 @@ interface Output {
   assets: { assetId: string; quantity: number }[];
 }
 
-export default class Signup {
+export default class GetAccount {
   constructor(private readonly AccountRepository: AccountRepository) {}
 
   public async execute(accountId: any): Promise<Output> {
