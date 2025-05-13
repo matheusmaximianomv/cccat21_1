@@ -1,7 +1,7 @@
 import AccountRepository from "../infrastructure/repository/AccountRepository";
 import Account from "../domain/Account";
 
-export default class Signup {
+export default class ImportAccounts {
   constructor(private readonly AccountRepository: AccountRepository) {}
 
   public async execute(input: any): Promise<any> {

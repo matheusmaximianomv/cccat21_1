@@ -9,10 +9,14 @@ interface Input {
   price: number;
 }
 
+interface Output {
+  orderId: string;
+}
+
 export default class PlaceOrder {
   constructor(private readonly orderRepository: OrderRepository) {}
 
-  public async execute(input: Input): Promise<any> {
+  public async execute(input: Input): Promise<Output> {
     const order = Order.create(
       input.marketId,
       input.accountId,
