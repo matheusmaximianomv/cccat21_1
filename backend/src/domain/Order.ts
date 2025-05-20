@@ -8,8 +8,10 @@ export default class Order {
     readonly side: string,
     readonly quantity: number,
     readonly price: number,
-    readonly status: string,
-    readonly timestamp: Date
+    public status: string,
+    readonly timestamp: Date,
+    public fillQuantity: number = 0,
+    public fillPrice: number = 0,
   ) {}
 
   public static create(

@@ -1,6 +1,27 @@
 import axios from "axios";
+import WebSocket from "ws";
 
 axios.defaults.validateStatus = () => true;
+
+let ws: WebSocket;
+let messages: any[] = [];
+
+beforeAll(async () => {
+    messages = [];
+    ws = new WebSocket("ws://localhost:3001");
+    ws.on("message", (data) => {
+        const message = JSON.parse(data.toString());
+        messages.push(message);
+    });
+});
+
+beforeEach(() => {
+    messages = [];
+});
+
+afterAll(async () => {
+    ws.close();
+});
 
 test("Deve criar uma conta válida", async () => {
     const inputSignup = {
@@ -142,4 +163,62 @@ test("Deve criar uma ordem de venda", async () => {
     expect(outputGetOrder.price).toBe(inputPlaceOrder.price);
     expect(outputGetOrder.status).toBe("open");
     expect(outputGetOrder.timestamp).toBeDefined();
+});
+
+test.skip("Deve criar ordens de compra e venda e executá-las", async () => {
+    const marketId = `BTC/USD${Math.random()}`;
+
+    const inputSignup = {
+        name: "John Doe",
+        email: "john.doe@gmail.com",
+        document: "97456321558",
+        password: "asdQWE123"
+    }
+    const responseSignup = await axios.post("http://localhost:3000/signup", inputSignup);
+    const outputSignup = responseSignup.data;
+    
+    const inputPlaceOrder1 = {
+        marketId,
+        accountId: outputSignup.accountId,
+        side: "sell",
+        quantity: 1,
+        price: 94000
+    };
+    const responsePlaceOrder1 = await axios.post("http://localhost:3000/place_order", inputPlaceOrder1);
+    const outputPlaceOrder1 = responsePlaceOrder1.data;
+
+    const inputPlaceOrder2 = {
+        marketId,
+        accountId: outputSignup.accountId,
+        side: "buy",
+        quantity: 1,
+        price: 94500
+    };
+    const responsePlaceOrder2 = await axios.post("http://localhost:3000/place_order", inputPlaceOrder2);
+    const outputPlaceOrder2 = responsePlaceOrder2.data;
+
+    const responseGetOrder = await axios.get(`http://localhost:3000/orders/${outputPlaceOrder1.orderId}`);
+    const outputGetOrder = responseGetOrder.data;
+    expect(outputGetOrder.status).toBe("closed");
+    expect(outputGetOrder.fillQuantity).toBe(1);
+    expect(outputGetOrder.fillPrice).toBe(94000);
+
+    const responseGetOrder2 = await axios.get(`http://localhost:3000/orders/${outputPlaceOrder2.orderId}`);
+    const outputGetOrder2 = responseGetOrder2.data;
+    expect(outputGetOrder2.status).toBe("closed");
+    expect(outputGetOrder2.fillQuantity).toBe(1);
+    expect(outputGetOrder2.fillPrice).toBe(94000);
+
+    const responseGetDepth = await axios.get(`http://localhost:3000/depth/${encodeURIComponent(marketId)}`);
+    const outputGetDepth = responseGetDepth.data;
+    expect(outputGetDepth.sells).toHaveLength(0);
+    expect(outputGetDepth.buys).toHaveLength(0);
+
+    // console.log('messages ->', messages);
+    // console.log('messages ->', messages[0].sells);
+
+    // expect(messages.at(0).buys).toHaveLength(0);
+    // expect(messages.at(0).sells).toHaveLength(1);
+    // expect(messages.at(1).buys).toHaveLength(0);
+    // expect(messages.at(1).sells).toHaveLength(0);
 });

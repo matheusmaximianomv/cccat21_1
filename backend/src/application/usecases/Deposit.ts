@@ -1,5 +1,5 @@
-import AccountAsset from "../domain/AccountAsset";
-import AccountRepository from "../infrastructure/repository/AccountRepository";
+import AccountAsset from "../../domain/AccountAsset";
+import AccountRepository from "../../infrastructure/repository/AccountRepository";
 
 interface Input {
   accountId: string;

@@ -1,6 +1,6 @@
 import { AccountRepositoryDatabase, AccountRepositoryMemory } from "../../src/infrastructure/repository/AccountRepository";
-import Signup from "../../src/application/Signup";
-import GetAccount from "../../src/application/GetAccount";
+import Signup from "../../src/application/usecases/Signup";
+import GetAccount from "../../src/application/usecases/GetAccount";
 import sinon from "sinon";
 import Account from "../../src/domain/Account";
 import DatabaseConnection, { PgPromiseAdapter } from "../../src/infrastructure/database/DatabaseConnection";

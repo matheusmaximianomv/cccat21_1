@@ -1,10 +1,11 @@
-import OrderRepository from "../infrastructure/repository/OrderRepository";
+import OrderRepository from "../../infrastructure/repository/OrderRepository";
 
 export default class GetOrder {
   constructor(private readonly orderRepository: OrderRepository) {}
 
   public async execute(orderId: any): Promise<any> {
     const orderData = await this.orderRepository.getOrderById(orderId);
+
     const order = {
       orderId: orderData.orderId,
       marketId: orderData.marketId,
@@ -14,6 +15,8 @@ export default class GetOrder {
       price: orderData.price,
       status: orderData.status,
       timestamp: orderData.timestamp,
+      fillQuantity: orderData.fillQuantity,
+      fillPrice: orderData.fillPrice,
     };
 
     return order;

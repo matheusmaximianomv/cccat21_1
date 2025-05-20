@@ -1,5 +1,8 @@
-import Order from "../domain/Order";
-import OrderRepository from "../infrastructure/repository/OrderRepository";
+import Order from "../../domain/Order";
+import Mediator from "../../infrastructure/mediator/Mediator";
+import OrderRepository from "../../infrastructure/repository/OrderRepository";
+import ExecuteOrder from "./ExecuteOrder";
+import GetDepth from "./GetDepth";
 
 interface Input {
   marketId: string;
@@ -14,7 +17,10 @@ interface Output {
 }
 
 export default class PlaceOrder {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(
+    private readonly orderRepository: OrderRepository,
+    private readonly mediator: Mediator = new Mediator()
+  ) {}
 
   public async execute(input: Input): Promise<Output> {
     const order = Order.create(
@@ -26,6 +32,8 @@ export default class PlaceOrder {
     );
 
     await this.orderRepository.saverOrder(order);
+
+    this.mediator.notifyAll("orderPlaced", { marketId: input.marketId });
 
     return {
       orderId: order.orderId,

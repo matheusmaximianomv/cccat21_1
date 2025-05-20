@@ -1,6 +1,6 @@
-import GetDepth from "../../src/application/GetDepth";
-import PlaceOrder from "../../src/application/PlaceOrder";
-import Signup from "../../src/application/Signup";
+import GetDepth from "../../src/application/usecases/GetDepth";
+import PlaceOrder from "../../src/application/usecases/PlaceOrder";
+import Signup from "../../src/application/usecases/Signup";
 import DatabaseConnection, {
   PgPromiseAdapter,
 } from "../../src/infrastructure/database/DatabaseConnection";

@@ -1,31 +1,43 @@
 import crypto from "crypto";
 
-import { validateCpf } from "./validateCpf";
-import { isValidPassword } from "./validatePassword";
+import Name from "./Name";
+import Email from "./Email";
+import Document from "./Document";
+import Password from "./Password";
 
 export default class Account {
+  private _name: Name;
+  private _email: Email;
+  private _document: Document;
+  private _password: Password;
+
+  public get name(): string {
+    return this._name.getValue();
+  }
+
+  public get email(): string {
+    return this._email.getValue();
+  }
+
+  public get document(): string {
+    return this._document.getValue();
+  }
+
+  public get password(): string {
+    return this._password.getValue();
+  }
+
   constructor(
     public readonly accountId: any,
-    public readonly name: any,
-    public readonly email: any,
-    public readonly document: any,
-    public readonly password: any
+    name: string,
+    email: string,
+    document: string,
+    password: string
   ) {
-    if (!this.isValidName(name)) {
-      throw new Error("Invalid name");
-    }
-
-    if (!this.isValidEmail(email)) {
-      throw new Error("Invalid email");
-    }
-
-    if (!validateCpf(document)) {
-      throw new Error("Invalid document");
-    }
-
-    if (!isValidPassword(password)) {
-      throw new Error("Invalid password");
-    }
+    this._name = new Name(name);
+    this._email = new Email(email);
+    this._document = new Document(document);
+    this._password = new Password(password);
   }
 
   public static create(
@@ -36,13 +48,5 @@ export default class Account {
   ): Account {
     const accountId = crypto.randomUUID();
     return new Account(accountId, name, email, document, password);
-  }
-
-  private isValidName(name: string) {
-    return name.match(/[a-zA-Z] [a-zA-Z]+/);
-  }
-
-  private isValidEmail(email: string) {
-    return email.match(/^(.+)\@(.+)$/);
   }
 }

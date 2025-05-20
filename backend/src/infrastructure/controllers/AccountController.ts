@@ -1,8 +1,8 @@
-import Deposit from "../../application/Deposit";
-import GetAccount from "../../application/GetAccount";
+import Deposit from "../../application/usecases/Deposit";
+import GetAccount from "../../application/usecases/GetAccount";
 import HttpServer from "../http/HttpServer";
-import Signup from "../../application/Signup";
-import Withdraw from "../../application/Withdraw";
+import Signup from "../../application/usecases/Signup";
+import Withdraw from "../../application/usecases/Withdraw";
 
 export default class AccountController {
   static config(
@@ -30,7 +30,7 @@ export default class AccountController {
 
     httpServer.route(
       "get",
-      "/accounts/:accountId",
+      "/accounts/:{accountId}",
       async (params: any, _body: any) => {
         const accountId = params.accountId;
         const output = await getAccount.execute(accountId);

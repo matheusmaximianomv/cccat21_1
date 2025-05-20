@@ -1,5 +1,5 @@
-import { groupOrders } from "../domain/groupOrders";
-import OrderRepository from "../infrastructure/repository/OrderRepository";
+import { groupOrders } from "../../domain/groupOrders";
+import OrderRepository from "../../infrastructure/repository/OrderRepository";
 
 interface Output {
   buys: { quantity: number; price: number }[];

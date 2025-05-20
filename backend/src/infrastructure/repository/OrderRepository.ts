@@ -8,6 +8,7 @@ export default interface OrderRepository {
     marketId: string,
     status: string
   ) => Promise<Order[]>;
+  updateOrder: (order: Order) => Promise<void>;
   deleteAll(): Promise<void>;
 }
 
@@ -16,7 +17,7 @@ export class OrderRepositoryDatabase implements OrderRepository {
 
   public async saverOrder(order: Order) {
     await this.connection.query(
-      "insert into ccca.order (order_id, market_id, account_id, side, quantity, price, status, timestamp) values ($1, $2, $3, $4, $5, $6, $7, $8)",
+      "insert into ccca.order (order_id, market_id, account_id, side, quantity, price, status, timestamp, fill_quantity, fill_price) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
       [
         order.orderId,
         order.marketId,
@@ -26,6 +27,8 @@ export class OrderRepositoryDatabase implements OrderRepository {
         order.price,
         order.status,
         order.timestamp,
+        order.fillQuantity,
+        order.fillPrice,
       ]
     );
   }
@@ -44,7 +47,9 @@ export class OrderRepositoryDatabase implements OrderRepository {
       parseFloat(orderData.quantity),
       parseFloat(orderData.price),
       orderData.status,
-      orderData.timestamp
+      orderData.timestamp,
+      parseFloat(orderData.fill_quantity),
+      parseFloat(orderData.fill_price)
     );
   }
 
@@ -67,12 +72,21 @@ export class OrderRepositoryDatabase implements OrderRepository {
           parseFloat(orderData.quantity),
           parseFloat(orderData.price),
           orderData.status,
-          orderData.timestamp
+          orderData.timestamp,
+          parseFloat(orderData.fill_quantity),
+          parseFloat(orderData.fill_price)
         )
     );
   }
 
   public async deleteAll(): Promise<void> {
     await this.connection.query("delete from ccca.order", []);
+  }
+
+  public async updateOrder(order: Order): Promise<void> {
+    await this.connection.query(
+      "update ccca.order set fill_quantity = $1, fill_price = $2, status = $3 where order_id = $4",
+      [order.fillQuantity, order.fillPrice, order.status, order.orderId]
+    );
   }
 }
