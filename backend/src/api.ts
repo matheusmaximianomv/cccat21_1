@@ -21,6 +21,8 @@ import OrderHandler from "./application/handlers/OrderHandler";
 import { TradeRepositoryDatabase } from "./infrastructure/repository/TradeRepository";
 import GetTrades from "./application/usecases/GetTrades";
 import TradeController from "./infrastructure/controllers/TradeController";
+import Book from "./domain/Book";
+import BookHandler from "./application/handlers/BookHandler";
 
 const httpServer = new ExpressAdapter();
 // const httpServer = new HapiAdapter();
@@ -45,9 +47,13 @@ const getOrder = new GetOrder(orderRepositoryDatabase);
 const getDepth = new GetDepth(orderRepositoryDatabase);
 const executeOrder = new ExecuteOrder(orderRepositoryDatabase, tradeRepository);
 
+const book = new Book("", mediator);
+
 AccountController.config(httpServer, signup, deposit, withdraw, getAccount);
 OrderController.config(httpServer, placeOrder, getOrder, getDepth);
-OrderHandler.config(mediator, webSocketServer, executeOrder, getDepth);
 TradeController.config(httpServer, getTrades);
+
+OrderHandler.config(mediator, webSocketServer, executeOrder, getDepth);
+// BookHandler.config(mediator, book, webSocketServer, orderRepositoryDatabase, tradeRepository);
 
 httpServer.listen(3000);

@@ -31,7 +31,7 @@ export default class PlaceOrder {
 
     await this.orderRepository.saverOrder(order);
 
-    await this.mediator.notifyAll("orderPlaced", { marketId: input.marketId });
+    await this.mediator.notifyAll("orderPlaced", order);
 
     return {
       orderId: order.orderId,
