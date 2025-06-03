@@ -401,7 +401,7 @@ test("Deve criar ordens de compra e venda com preços diferentes e executá-las"
   expect(outputGetTrades).toHaveLength(1);
 });
 
-test.only("Deve criar várias ordens de compra e venda e executá-las na média", async () => {
+test("Deve criar várias ordens de compra e venda e executá-las na média", async () => {
   const marketId = `BTC/USD${Math.random()}`;
 
   const inputSignup = {
