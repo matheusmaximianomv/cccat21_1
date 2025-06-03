@@ -7,16 +7,13 @@ interface Input {
 }
 
 export default class Withdraw {
-  constructor(private readonly AccountRepository: AccountRepository) {}
+  constructor(private readonly accountRepository: AccountRepository) {}
 
   public async execute(input: Input): Promise<void> {
-    const accountAsset = await this.AccountRepository.getAccountAsset(
-      input.accountId,
-      input.assetId
+    const account = await this.accountRepository.getAccountById(
+      input.accountId
     );
-
-    accountAsset.withdraw(input.quantity);
-
-    await this.AccountRepository.updateAccountAsset(accountAsset);
+    account.withdraw(input.assetId, input.quantity);
+    await this.accountRepository.updateAccount(account);
   }
 }

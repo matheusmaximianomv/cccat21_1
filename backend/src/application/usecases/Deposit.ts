@@ -1,4 +1,3 @@
-import AccountAsset from "../../domain/AccountAsset";
 import AccountRepository from "../../infrastructure/repository/AccountRepository";
 
 interface Input {
@@ -8,11 +7,11 @@ interface Input {
 }
 
 export default class Deposit {
-  constructor(private readonly AccountRepository: AccountRepository) {}
+  constructor(private readonly accountRepository: AccountRepository) {}
 
   public async execute(input: Input): Promise<void> {
-    await this.AccountRepository.saveAccountAsset(
-      new AccountAsset(input.accountId, input.assetId, input.quantity)
-    );
+    const account = await this.accountRepository.getAccountById(input.accountId);
+    account.deposit(input.assetId, input.quantity);
+    await this.accountRepository.updateAccount(account);
   }
 }

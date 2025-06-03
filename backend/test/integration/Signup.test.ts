@@ -1,9 +1,14 @@
-import { AccountRepositoryDatabase, AccountRepositoryMemory } from "../../src/infrastructure/repository/AccountRepository";
+import {
+  AccountRepositoryDatabase,
+  AccountRepositoryMemory,
+} from "../../src/infrastructure/repository/AccountRepository";
 import Signup from "../../src/application/usecases/Signup";
 import GetAccount from "../../src/application/usecases/GetAccount";
 import sinon from "sinon";
 import Account from "../../src/domain/Account";
-import DatabaseConnection, { PgPromiseAdapter } from "../../src/infrastructure/database/DatabaseConnection";
+import DatabaseConnection, {
+  PgPromiseAdapter,
+} from "../../src/infrastructure/database/DatabaseConnection";
 
 let connection: DatabaseConnection;
 
@@ -14,7 +19,7 @@ beforeEach(() => {
   // const AccountRepository = new AccountRepositoryMemory();
   connection = new PgPromiseAdapter();
   const AccountRepository = new AccountRepositoryDatabase(connection);
-  
+
   signup = new Signup(AccountRepository);
   getAccount = new GetAccount(AccountRepository);
 });
@@ -79,9 +84,6 @@ test("Deve criar uma conta válida com stub", async () => {
         inputSignup.password
       )
     );
-  const getAccountAssetsStub = sinon
-    .stub(AccountRepositoryDatabase.prototype, "getAccountAssets")
-    .resolves([]);
   const outputGetAccount = await getAccount.execute(accountId);
 
   expect(outputGetAccount.name).toBe(inputSignup.name);
@@ -90,7 +92,6 @@ test("Deve criar uma conta válida com stub", async () => {
 
   saveAccountStub.restore();
   getAccountByIdStub.restore();
-  getAccountAssetsStub.restore();
 });
 
 test("Deve criar uma conta válida com spy", async () => {
@@ -101,7 +102,10 @@ test("Deve criar uma conta válida com spy", async () => {
     password: "asdQWE123",
   };
 
-  const saveAccountSpy = sinon.spy(AccountRepositoryDatabase.prototype, "saveAccount");
+  const saveAccountSpy = sinon.spy(
+    AccountRepositoryDatabase.prototype,
+    "saveAccount"
+  );
   const outputSignup = await signup.execute(inputSignup);
 
   expect(outputSignup.accountId).toBeDefined();
@@ -119,7 +123,8 @@ test("Deve criar uma conta válida com spy", async () => {
     inputSignup.name,
     inputSignup.email,
     inputSignup.document,
-    inputSignup.password
+    inputSignup.password,
+    []
   );
   expect(saveAccountSpy.calledWith(account)).toBe(true);
 
@@ -141,8 +146,18 @@ test("Deve criar uma conta válida com mock", async () => {
 
   expect(accountId).toBeDefined();
 
-  AccountRepositoryMock.expects("getAccountById").once().resolves(inputSignup);
-  AccountRepositoryMock.expects("getAccountAssets").once().resolves([]);
+  AccountRepositoryMock.expects("getAccountById")
+    .once()
+    .resolves(
+      new Account(
+        "",
+        inputSignup.name,
+        inputSignup.email,
+        inputSignup.document,
+        inputSignup.password,
+        []
+      )
+    );
   const outputGetAccount = await getAccount.execute(accountId);
 
   expect(outputGetAccount.name).toBe(inputSignup.name);
