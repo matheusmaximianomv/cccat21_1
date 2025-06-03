@@ -1,8 +1,6 @@
 import Order from "../../domain/Order";
-import Mediator from "../../infrastructure/mediator/Mediator";
+import { Mediator } from "../../infrastructure/mediator/Mediator";
 import OrderRepository from "../../infrastructure/repository/OrderRepository";
-import ExecuteOrder from "./ExecuteOrder";
-import GetDepth from "./GetDepth";
 
 interface Input {
   marketId: string;
@@ -33,7 +31,7 @@ export default class PlaceOrder {
 
     await this.orderRepository.saverOrder(order);
 
-    this.mediator.notifyAll("orderPlaced", { marketId: input.marketId });
+    await this.mediator.notifyAll("orderPlaced", { marketId: input.marketId });
 
     return {
       orderId: order.orderId,

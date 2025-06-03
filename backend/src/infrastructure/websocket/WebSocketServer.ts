@@ -8,7 +8,7 @@ export class WSSAdapter implements WebSocketServer {
 
   private wss: Server;
   private connections: any[];
-  
+
   constructor(port: number) {
     this.wss = new WebSocket.Server({ port });
     this.connections = [];
@@ -19,7 +19,7 @@ export class WSSAdapter implements WebSocketServer {
 
   public async broadcast(message: any): Promise<void> {
     for (const connection of this.connections) {
-      connection.send(Buffer.from(JSON.stringify({ message })));
+      await connection.send(Buffer.from(JSON.stringify(message)));
     }
   }
 }

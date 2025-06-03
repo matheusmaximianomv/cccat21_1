@@ -13,7 +13,7 @@ import AccountController from "./infrastructure/controllers/AccountController";
 import OrderController from "./infrastructure/controllers/OrderController";
 import { PgPromiseAdapter } from "./infrastructure/database/DatabaseConnection";
 import GetDepth from "./application/usecases/GetDepth";
-import Mediator from "./infrastructure/mediator/Mediator";
+import { Mediator } from "./infrastructure/mediator/Mediator";
 
 import ExecuteOrder from "./application/usecases/ExecuteOrder";
 import { WSSAdapter } from "./infrastructure/websocket/WebSocketServer";

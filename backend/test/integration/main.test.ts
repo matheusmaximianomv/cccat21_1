@@ -165,7 +165,7 @@ test("Deve criar uma ordem de venda", async () => {
     expect(outputGetOrder.timestamp).toBeDefined();
 });
 
-test.skip("Deve criar ordens de compra e venda e executá-las", async () => {
+test("Deve criar ordens de compra e venda e executá-las", async () => {
     const marketId = `BTC/USD${Math.random()}`;
 
     const inputSignup = {
@@ -211,14 +211,16 @@ test.skip("Deve criar ordens de compra e venda e executá-las", async () => {
 
     const responseGetDepth = await axios.get(`http://localhost:3000/depth/${encodeURIComponent(marketId)}`);
     const outputGetDepth = responseGetDepth.data;
+    
     expect(outputGetDepth.sells).toHaveLength(0);
     expect(outputGetDepth.buys).toHaveLength(0);
 
-    // console.log('messages ->', messages);
-    // console.log('messages ->', messages[0].sells);
+    expect(messages.at(0).buys).toHaveLength(0);
+    expect(messages.at(0).sells).toHaveLength(1);
+    expect(messages.at(1).buys).toHaveLength(0);
+    expect(messages.at(1).sells).toHaveLength(0);
 
-    // expect(messages.at(0).buys).toHaveLength(0);
-    // expect(messages.at(0).sells).toHaveLength(1);
-    // expect(messages.at(1).buys).toHaveLength(0);
-    // expect(messages.at(1).sells).toHaveLength(0);
+    const responseGetTrades = await axios.get(`http://localhost:3000/markets/${encodeURIComponent(marketId)}/trades`);
+    const outputGetTrades = responseGetTrades.data;
+    expect(outputGetTrades).toHaveLength(1)
 });

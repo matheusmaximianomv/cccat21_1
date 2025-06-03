@@ -5,7 +5,7 @@ interface Handler {
   callback: HandlerCallback;
 }
 
-export default class Mediator {
+export class Mediator {
   private handlers: Handler[];
 
   constructor() {
