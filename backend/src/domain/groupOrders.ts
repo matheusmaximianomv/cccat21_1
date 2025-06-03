@@ -14,7 +14,7 @@ export function groupOrders(orders: Order[], precision: number) {
     }
 
     index[order.side][price] = index[order.side][price] || 0;
-    index[order.side][price] += order.quantity;
+    index[order.side][price] += order.getAvailableQuantity();
   }
 
   return index;

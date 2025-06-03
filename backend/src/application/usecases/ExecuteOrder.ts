@@ -30,14 +30,23 @@ export default class ExecuteOrder {
   }
 
   public async execute(input: Input): Promise<void> {
-    const orders = await this.orderRepository.getOrdersByMarketIdAndStatus(
-      input.marketId,
-      "open"
-    );
+    while (true) {
+      const orders = await this.orderRepository.getOrdersByMarketIdAndStatus(
+        input.marketId,
+        "open"
+      );
 
-    const highestBuy = this.getHighestBuy(orders);
-    const lowestSell = this.getLowestSell(orders);
-    if (highestBuy && lowestSell && highestBuy.price >= lowestSell.price) {
+      const highestBuy = this.getHighestBuy(orders);
+      const lowestSell = this.getLowestSell(orders);
+
+      if (!highestBuy || !lowestSell) {
+        return;
+      }
+
+      if (highestBuy.price < lowestSell.price) {
+        return;
+      }
+
       const fillQuantity = Math.min(highestBuy.quantity, lowestSell.quantity);
       const fillPrice =
         highestBuy.timestamp.getTime() > lowestSell.timestamp.getTime()
@@ -49,19 +58,8 @@ export default class ExecuteOrder {
           ? "buy"
           : "sell";
 
-      highestBuy.fillQuantity = fillQuantity;
-      lowestSell.fillQuantity = fillQuantity;
-
-      highestBuy.fillPrice = fillPrice;
-      lowestSell.fillPrice = fillPrice;
-
-      if (highestBuy.quantity === highestBuy.fillQuantity) {
-        highestBuy.status = "closed";
-      }
-
-      if (lowestSell.quantity === lowestSell.fillQuantity) {
-        lowestSell.status = "closed";
-      }
+      highestBuy.fill(fillQuantity, fillPrice);
+      lowestSell.fill(fillQuantity, fillPrice);
 
       await this.orderRepository.updateOrder(highestBuy);
       await this.orderRepository.updateOrder(lowestSell);

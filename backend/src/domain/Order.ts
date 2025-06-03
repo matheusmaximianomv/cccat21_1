@@ -11,7 +11,7 @@ export default class Order {
     public status: string,
     readonly timestamp: Date,
     public fillQuantity: number = 0,
-    public fillPrice: number = 0,
+    public fillPrice: number = 0
   ) {}
 
   public static create(
@@ -19,7 +19,7 @@ export default class Order {
     accountId: string,
     side: string,
     quantity: number,
-    price: number,
+    price: number
   ): Order {
     return new Order(
       crypto.randomUUID(),
@@ -29,7 +29,23 @@ export default class Order {
       quantity,
       price,
       "open",
-      new Date(),
+      new Date()
     );
+  }
+
+  fill(quantity: number, price: number) {
+    this.fillPrice =
+      (this.fillQuantity * this.fillPrice + quantity * price) /
+      (this.fillQuantity + quantity);
+
+    this.fillQuantity += quantity;
+
+    if (this.getAvailableQuantity() === 0) {
+      this.status = "closed";
+    }
+  }
+
+  public getAvailableQuantity(): number {
+    return this.quantity - this.fillQuantity;
   }
 }
